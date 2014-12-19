@@ -1,0 +1,10 @@
+.blockAbs
+{
+    position: absolute; display: block;
+}
+
+.btn32
+{
+    width:32px;
+    height:60px;
+}

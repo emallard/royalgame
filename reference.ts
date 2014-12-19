@@ -1,0 +1,11 @@
+///<reference path='./public/libs/knockout.d.ts' />
+///<reference path='./ts/view/Rectangle.ts' />
+///<reference path='./ts/view/View2d.ts' />
+///<reference path='./ts/view/WindowRectangle.ts' />
+///<reference path='./ts/view/vue2Knockout.ts' />
+///<reference path='./ts/viewModels/AppViewModel.ts' />
+///<reference path='./ts/viewModels/AreaViewModel.ts' />
+///<reference path='./ts/viewModels/ButtonViewModel.ts' />
+///<reference path='./ts/viewModels/Cube.ts' />
+///<reference path='./ts/viewModels/CubeViewModel.ts' />
+///<reference path='./ts/viewModels/ShadowComputer.ts' />
