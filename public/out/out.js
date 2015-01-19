@@ -1,5 +1,52 @@
 var game2;
 (function (game2) {
+    var LoadSaveService = (function () {
+        function LoadSaveService() {
+        }
+        LoadSaveService.prototype.load = function (appVm, content) {
+            var savedData = JSON.parse(content);
+            appVm.areaViewModel.cubeViewModels.removeAll();
+            savedData.blocks.forEach(function (b) {
+                var cubeVm = new game2.CubeViewModel();
+                cubeVm.cssId(b.cssId);
+                cubeVm.cube().setMinMax(b.cube.min, b.cube.max);
+                appVm.areaViewModel.cubeViewModels.push(cubeVm);
+            });
+        };
+        LoadSaveService.prototype.save = function (appVm) {
+            var cubeVms = appVm.areaViewModel.cubeViewModels();
+            var savedData = {};
+            savedData.blocks = [];
+            cubeVms.forEach(function (cubeVm) {
+                var savedBlock = new game2.SavedBlock();
+                savedBlock.cssId = cubeVm.cssId();
+                savedBlock.cube = cubeVm.cube();
+                savedData.blocks.push(savedBlock);
+            });
+            return JSON.stringify(savedData);
+        };
+        return LoadSaveService;
+    })();
+    game2.LoadSaveService = LoadSaveService;
+})(game2 || (game2 = {}));
+var game2;
+(function (game2) {
+    var SavedData = (function () {
+        function SavedData() {
+            this.blocks = [];
+        }
+        return SavedData;
+    })();
+    game2.SavedData = SavedData;
+    var SavedBlock = (function () {
+        function SavedBlock() {
+        }
+        return SavedBlock;
+    })();
+    game2.SavedBlock = SavedBlock;
+})(game2 || (game2 = {}));
+var game2;
+(function (game2) {
     var Rectangle = (function () {
         function Rectangle() {
             this.min = [0, 0];
@@ -266,7 +313,23 @@ var game2;
     var AppViewModel = (function () {
         function AppViewModel() {
             this.areaViewModel = new game2.AreaViewModel();
+            this.loadSaveService = new game2.LoadSaveService();
         }
+        AppViewModel.prototype.save = function () {
+            var savedString = this.loadSaveService.save(this);
+            var b = new Blob([savedString], { type: "text/plain;charset=UTF-8" });
+            saveAs(b, "royalgame.json");
+        };
+        AppViewModel.prototype.openChange = function (sender, evt) {
+            var _this = this;
+            var f = evt.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var text = reader.result;
+                _this.loadSaveService.load(_this, text);
+            };
+            reader.readAsText(f);
+        };
         return AppViewModel;
     })();
     game2.AppViewModel = AppViewModel;
@@ -282,25 +345,29 @@ var game2;
             this.currentBlock = "GrassBlock";
             this.view2d = new game2.View2d();
             this.buttonViewModels = [];
+            this.cubes = [];
+            this.isAddMode = true;
             this.isMouseDown = false;
             this.isMouseDrag = false;
             this.dragStartBounds = [0, 0, 0, 0];
-            this.shadowComputer = new game2.ShadowComputer();
-            this.cubes = [];
             this.cursorBlockPos = [0, 0, 0];
             this.cursorBlockViewModel.cssId("CursorBlock");
-            var c = new game2.Cube();
-            c.min = [0, 0, 0];
-            c.max = [1, 1, 1];
+            /*
+            var c = new Cube();
+            c.min = [0,0,0];
+            c.max = [1,1,1];
             this.addCube(c, "StoneBlock");
-            var c2 = new game2.Cube();
-            c2.min = [1, 0, 0];
-            c2.max = [2, 1, 1];
+
+            var c2 = new Cube();
+            c2.min = [1,0,0];
+            c2.max = [2,1,1];
             this.addCube(c2, "GrassBlock");
-            var c3 = new game2.Cube();
-            c3.min = [1, 1, 0];
-            c3.max = [2, 2, 1];
+
+            var c3 = new Cube();
+            c3.min = [1,1,0];
+            c3.max = [2,2,1];
             this.addCube(c3, "WaterBlock");
+            */
             this.buttonViewModels.push(new game2.ButtonViewModel().set("WaterBlock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("StoneBlock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("GrassBlock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("BrownBlock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("PlainBlock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("WoodBlock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("DirtBlock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("CharacterBoy", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("CharacterCatGirl", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("CharacterHornGirl", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("CharacterPinkGirl", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("CharacterPrincessGirl", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("ChestClosed", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("ChestOpen", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("EnemyBug", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("GemBlue", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("GemGreen", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("GemOrange", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("Heart", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("Key", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("RampEast", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("RampNorth", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("RampSouth", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("RampWest", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("Rock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("Selector", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("SpeechBubble", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("Star", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("TreeShort", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("TreeUgly", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("TreeTall", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("WallBlock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }));
         }
         AreaViewModel.prototype.onMouseUp = function (sender, e) {
@@ -313,7 +380,12 @@ var game2;
             if (!this.isMouseDrag) {
                 var cube = new game2.Cube();
                 this.getCubeUnderMouse(eoffsetX, eoffsetY, cube);
-                this.addCube(cube, this.currentBlock);
+                if (this.isAddMode) {
+                    this.addCube(cube, this.currentBlock);
+                }
+                else {
+                    this.removeCube(cube);
+                }
             }
             else {
                 this.dragStartX = eoffsetX;
@@ -362,6 +434,10 @@ var game2;
         };
         AreaViewModel.prototype.onBtnClick = function (btn) {
             this.currentBlock = btn.image;
+            this.isAddMode = true;
+        };
+        AreaViewModel.prototype.onDelClick = function () {
+            this.isAddMode = false;
         };
         AreaViewModel.prototype.zoomPlus = function () {
             this.view2d.zoomRelative(+1, [350, 350]);
@@ -376,6 +452,10 @@ var game2;
             vm.cssId(cssId);
             this.cubes.push(cube);
             this.cubeViewModels.push(vm);
+        };
+        AreaViewModel.prototype.removeCube = function (cube) {
+            var foundVm = this.getCubeViewModelAt(cube.min[0], cube.min[1], cube.min[2]);
+            this.cubeViewModels.remove(foundVm);
         };
         AreaViewModel.prototype.getCubeViewModelAt = function (i, j, k) {
             var vms = this.cubeViewModels();

@@ -16,11 +16,24 @@ module game2
 
         buttonViewModels:ButtonViewModel[] = [];
 
+
+        cubes : Cube[] = [];
+
+        isAddMode = true;
+
+        isMouseDown:boolean = false;
+        isMouseDrag:boolean = false;
+        dragStartX:number;
+        dragStartY:number;
+        dragStartBounds = [0,0,0,0];
+
+
         constructor()
         {
             this.cursorBlockPos = [0,0,0];
             this.cursorBlockViewModel.cssId("CursorBlock");
 
+            /*
             var c = new Cube();
             c.min = [0,0,0];
             c.max = [1,1,1];
@@ -35,7 +48,7 @@ module game2
             c3.min = [1,1,0];
             c3.max = [2,2,1];
             this.addCube(c3, "WaterBlock");
-
+            */
 
             this.buttonViewModels.push(
                 new ButtonViewModel().set("WaterBlock", [1,1,1], (btn)=>this.onBtnClick(btn)),
@@ -76,12 +89,6 @@ module game2
             )
         }
 
-        isMouseDown:boolean = false;
-        isMouseDrag:boolean = false;
-        dragStartX:number;
-        dragStartY:number;
-        dragStartBounds = [0,0,0,0];
-
         onMouseUp(sender:any, e:any)
         {
             this.isMouseDown = false;
@@ -99,10 +106,17 @@ module game2
 
             if (!this.isMouseDrag)
             {
-
                 var cube = new Cube();
                 this.getCubeUnderMouse(eoffsetX, eoffsetY, cube);
-                this.addCube(cube, this.currentBlock);
+                if (this.isAddMode)
+                {
+
+                    this.addCube(cube, this.currentBlock);
+                }
+                else
+                {
+                    this.removeCube(cube);
+                }
             }
 
             else
@@ -177,6 +191,12 @@ module game2
         onBtnClick(btn:ButtonViewModel):void
         {
             this.currentBlock = btn.image;
+            this.isAddMode = true;
+        }
+
+        onDelClick():void
+        {
+            this.isAddMode = false;
         }
 
 
@@ -184,8 +204,6 @@ module game2
         zoomPlus()  {this.view2d.zoomRelative(+1, [350,350]);}
         zoomMinus() {this.view2d.zoomRelative(-1, [350,350]);}
 
-        shadowComputer = new ShadowComputer();
-        cubes : Cube[] = [];
 
         addCube(cube:Cube, cssId:string)
         {
@@ -196,6 +214,12 @@ module game2
             vm.cssId(cssId);
             this.cubes.push(cube);
             this.cubeViewModels.push(vm);
+        }
+
+        removeCube(cube:Cube)
+        {
+            var foundVm = this.getCubeViewModelAt(cube.min[0], cube.min[1], cube.min[2]);
+            this.cubeViewModels.remove(foundVm);
         }
 
         getCubeViewModelAt(i:number, j:number, k:number)

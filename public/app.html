@@ -6,6 +6,7 @@
 
     <script type="text/javascript" src="libs/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="libs/knockout-3.0.0.js"></script>
+    <script type="text/javascript" src="libs/FileSaver.js"></script>
 
     <script type="text/javascript" src="out/out.js"></script>
 
@@ -22,24 +23,27 @@
 
 <body onload="applicationStart();">
 
-    <div data-bind="with: areaViewModel">
-        <button data-bind="click: zoomPlus">zoom +</button>
-        <button data-bind="click: zoomMinus">zoom -</button>
-        (or wheel) - Drag Middle Click to translate
-        <button data-bind="click: heightPlus">height+</button>
-        <button data-bind="click: heightMinus">height-</button>
-    </div>
-    <div data-bind="with: areaViewModel">
-        <div data-bind="foreach:buttonViewModels">
-            <button data-bind="click: click, background:image" class="btn32"></button>
+    <div>
+        <button data-bind="click: save">save</button>
+        Open:<input type="file" data-bind="event : { change: openChange }"/>
+
+        <div data-bind="with: areaViewModel">
+            <button data-bind="click: zoomPlus">zoom +</button>
+            <button data-bind="click: zoomMinus">zoom -</button>
+            (or wheel) - Drag Middle Click to translate
+            <button data-bind="click: heightPlus">height+</button>
+            <button data-bind="click: heightMinus">height-</button>
         </div>
-        <!--
-        <button data-bind="click: setGrass" class="btn32 grassBlock"></button>
-        <button data-bind="click: setStone" class="stoneBlock btn32"></button>
-        <button data-bind="click: setWater" class="waterBlock btn32"></button>
-        <button data-bind="click: setTreeShort" class="treeShort btn32"></button>
-        <button data-bind="click: setCharacterBoyDown" class="characterBoyDown btn32"></button>
-        -->
+
+    </div>
+
+
+
+    <div data-bind="with: areaViewModel">
+        <button data-bind="click: onDelClick" class="btn32" style="float:left">X</button>
+        <div data-bind="foreach:buttonViewModels">
+            <button data-bind="click: click, background:image" class="btn32" ></button>
+        </div>
     </div>
 
 
@@ -51,7 +55,8 @@
         </div>
 
         <div data-bind="background:cursorBlockViewModel.cssId, cube:cursorBlockViewModel.cube"
-                class="blockAbs"></div>
+                class="blockAbs">
+        </div>
 
         <div data-bind="foreach: cubeViewModels">
 

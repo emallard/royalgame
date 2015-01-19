@@ -1,4 +1,6 @@
 ///<reference path='./public/libs/knockout.d.ts' />
+///<reference path='./ts/services/LoadSaveService.ts' />
+///<reference path='./ts/services/SavedData.ts' />
 ///<reference path='./ts/view/Rectangle.ts' />
 ///<reference path='./ts/view/View2d.ts' />
 ///<reference path='./ts/view/WindowRectangle.ts' />
