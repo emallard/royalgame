@@ -261,49 +261,18 @@ ko.bindingHandlers['view'] = {
         console.log("view setWindowSize");
         console.log($(element).width(), ", ", $(element).height());
         view.setWindowSize($(element).width(), $(element).height());
-        // Interactions
-        /*
-         var interactions = new vue2.viewInteractions();
-         interactions.setview(view);
-
-         $(element).mousewheel(function(e, delta)
-         {
-         var eoffsetX = (e.offsetX || e.clientX - $(e.target).offset().left + window.pageXOffset ),
-         eoffsetY = (e.offsetY || e.clientY - $(e.target).offset().top + window.pageYOffset );
-
-         interactions.zoomRelative(delta, [eoffsetX, eoffsetY]);
-         });
-
-         var callback = function()
-         {
-         observable.withPausing().sneakyUpdate(view.bounds);
-         if (viewModel.onRectangleChangedFromView)
-         {
-         viewModel.onRectangleChangedFromView();
-         }
-         }
-         view.pushBoundChanged(element, callback);
-
-         */
         ko.bindingHandlers['view'].update(element, valueAccessor, allBindingsAccessor, viewModel, null);
     },
     update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
         var value = ko.utils.unwrapObservable(valueAccessor());
         var view = getViewData(element);
-        /*
-        console.log("view set bounds to view model");
-        console.log(JSON.stringify(value));
-        setTimeout(function() {
-            view.setBounds(value);
-        }, 1);
-        */
     }
 };
 ko.bindingHandlers['background'] = {
     init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
         var value = ko.utils.unwrapObservable(valueAccessor());
         $(element).css({
-            "background": "url(css/images/" + value + ".png) no-repeat",
+            "background": "url(css/" + value + ") no-repeat",
             "background-size": "100% auto"
         });
     }
@@ -342,16 +311,16 @@ var game2;
             this.cubeViewModels = ko.observableArray([]);
             this.cursorBlockViewModel = new game2.CubeViewModel();
             this.currentHeight = 0;
-            this.currentBlock = "GrassBlock";
+            this.currentBlock = "blocks/GrassBlock.png";
             this.view2d = new game2.View2d();
-            this.buttonViewModels = [];
+            this.buttonViewModels = ko.observableArray([]);
             this.cubes = [];
             this.isAddMode = true;
             this.isMouseDown = false;
             this.isMouseDrag = false;
             this.dragStartBounds = [0, 0, 0, 0];
             this.cursorBlockPos = [0, 0, 0];
-            this.cursorBlockViewModel.cssId("CursorBlock");
+            this.cursorBlockViewModel.cssId("images/CursorBlock.png");
             /*
             var c = new Cube();
             c.min = [0,0,0];
@@ -368,14 +337,20 @@ var game2;
             c3.max = [2,2,1];
             this.addCube(c3, "WaterBlock");
             */
-            this.buttonViewModels.push(new game2.ButtonViewModel().set("WaterBlock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("StoneBlock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("GrassBlock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("BrownBlock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("PlainBlock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("WoodBlock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("DirtBlock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("CharacterBoy", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("CharacterCatGirl", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("CharacterHornGirl", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("CharacterPinkGirl", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("CharacterPrincessGirl", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("ChestClosed", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("ChestOpen", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("EnemyBug", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("GemBlue", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("GemGreen", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("GemOrange", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("Heart", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("Key", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("RampEast", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("RampNorth", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("RampSouth", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("RampWest", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("Rock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("Selector", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("SpeechBubble", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("Star", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("TreeShort", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("TreeUgly", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("TreeTall", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }), new game2.ButtonViewModel().set("WallBlock", [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }));
+            $.get('/api/get_blocks', function (data) {
+                var dataObj = JSON.parse(data);
+                for (var key in dataObj) {
+                    _this.buttonViewModels.push(new game2.ButtonViewModel().set(dataObj[key], [1, 1, 1], function (btn) { return _this.onBtnClick(btn); }));
+                }
+                var zreerzrez = 0;
+            });
         }
         AreaViewModel.prototype.onMouseUp = function (sender, e) {
             this.isMouseDown = false;
         };
         AreaViewModel.prototype.onMouseDown = function (sender, e) {
             var eoffsetX = (e.offsetX || e.clientX - $(e.target).offset().left + window.pageXOffset), eoffsetY = (e.offsetY || e.clientY - $(e.target).offset().top + window.pageYOffset);
-            this.isMouseDrag = e.which == 2;
+            this.isMouseDrag = e.which == 2 || e.shiftKey == true;
             this.isMouseDown = true;
             if (!this.isMouseDrag) {
                 var cube = new game2.Cube();

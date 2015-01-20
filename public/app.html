@@ -23,58 +23,6 @@
 
 <body onload="applicationStart();">
 
-    <div>
-        <button data-bind="click: save">save</button>
-        Open:<input type="file" data-bind="event : { change: openChange }"/>
 
-        <div data-bind="with: areaViewModel">
-            <button data-bind="click: zoomPlus">zoom +</button>
-            <button data-bind="click: zoomMinus">zoom -</button>
-            (or wheel) - Drag Middle Click to translate
-            <button data-bind="click: heightPlus">height+</button>
-            <button data-bind="click: heightMinus">height-</button>
-        </div>
-
-    </div>
-
-
-
-    <div data-bind="with: areaViewModel">
-        <button data-bind="click: onDelClick" class="btn32" style="float:left">X</button>
-        <div data-bind="foreach:buttonViewModels">
-            <button data-bind="click: click, background:image" class="btn32" ></button>
-        </div>
-    </div>
-
-
-    <div data-bind="with: areaViewModel">
-    <div data-bind="view: view2d"
-         style="position:relative;width:700px; height:700px;overflow:hidden;">
-
-        <div style="background-color:#DDDDDD;position:absolute; width:700px; height:700px; top:0px; left:0px; z-index:-1000001">
-        </div>
-
-        <div data-bind="background:cursorBlockViewModel.cssId, cube:cursorBlockViewModel.cube"
-                class="blockAbs">
-        </div>
-
-        <div data-bind="foreach: cubeViewModels">
-
-            <div data-bind="background:cssId, cube:cube"
-                 class="blockAbs"></div>
-
-            <!--
-            <div data-bind="foreach: shadows">
-                <div data-bind="css:cssId, top:top, left:left, zIndex:z, width:width, height:height"></div>
-            </div>
-            -->
-        </div>
-
-        <div style="position:absolute; width:700px; height:700px; top:0px; left:0px; z-index:1000001"
-             data-bind="event : {mousemove: onMouseMove, mousedown : onMouseDown, mouseup : onMouseUp, mousewheel : onMouseWheel}">
-        </div>
-
-    </div>
-    </div>
 </body>
 </html>

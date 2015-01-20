@@ -71,30 +71,6 @@ ko.bindingHandlers['view'] =
         console.log($(element).width(), ", " , $(element).height());
         view.setWindowSize($(element).width(), $(element).height());
 
-        // Interactions
-        /*
-         var interactions = new vue2.viewInteractions();
-         interactions.setview(view);
-
-         $(element).mousewheel(function(e, delta)
-         {
-         var eoffsetX = (e.offsetX || e.clientX - $(e.target).offset().left + window.pageXOffset ),
-         eoffsetY = (e.offsetY || e.clientY - $(e.target).offset().top + window.pageYOffset );
-
-         interactions.zoomRelative(delta, [eoffsetX, eoffsetY]);
-         });
-
-         var callback = function()
-         {
-         observable.withPausing().sneakyUpdate(view.bounds);
-         if (viewModel.onRectangleChangedFromView)
-         {
-         viewModel.onRectangleChangedFromView();
-         }
-         }
-         view.pushBoundChanged(element, callback);
-
-         */
         ko.bindingHandlers['view'].update(element, valueAccessor, allBindingsAccessor, viewModel, null);
     },
 
@@ -103,15 +79,6 @@ ko.bindingHandlers['view'] =
 
         var value:any = ko.utils.unwrapObservable(valueAccessor());
         var view = getViewData(element);
-
-        /*
-        console.log("view set bounds to view model");
-        console.log(JSON.stringify(value));
-        setTimeout(function() {
-            view.setBounds(value);
-        }, 1);
-        */
-
     }
 };
 
@@ -125,7 +92,7 @@ ko.bindingHandlers['background'] =
         var value:any = ko.utils.unwrapObservable(valueAccessor());
         $(element).css(
             {
-                "background": "url(css/images/"+value+".png) no-repeat",
+                "background": "url(css/"+value+") no-repeat",
                 "background-size": "100% auto"
             }
         )

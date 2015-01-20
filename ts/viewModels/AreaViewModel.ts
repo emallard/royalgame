@@ -10,11 +10,11 @@ module game2
 
         private cursorBlockPos: number[];
         private currentHeight:number = 0;
-        private currentBlock:string = "GrassBlock";
+        private currentBlock:string = "blocks/GrassBlock.png";
 
         view2d:View2d = new View2d();
 
-        buttonViewModels:ButtonViewModel[] = [];
+        buttonViewModels= ko.observableArray<ButtonViewModel>([]);
 
 
         cubes : Cube[] = [];
@@ -31,7 +31,7 @@ module game2
         constructor()
         {
             this.cursorBlockPos = [0,0,0];
-            this.cursorBlockViewModel.cssId("CursorBlock");
+            this.cursorBlockViewModel.cssId("images/CursorBlock.png");
 
             /*
             var c = new Cube();
@@ -50,43 +50,17 @@ module game2
             this.addCube(c3, "WaterBlock");
             */
 
-            this.buttonViewModels.push(
-                new ButtonViewModel().set("WaterBlock", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("StoneBlock", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("GrassBlock", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("BrownBlock", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("PlainBlock", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("WoodBlock", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("DirtBlock", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("CharacterBoy", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("CharacterCatGirl", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("CharacterHornGirl", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("CharacterPinkGirl", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("CharacterPrincessGirl", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("ChestClosed", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("ChestOpen", [1,1,1], (btn)=>this.onBtnClick(btn)),
-
-                new ButtonViewModel().set("EnemyBug", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("GemBlue", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("GemGreen", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("GemOrange", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("Heart", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("Key", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("RampEast", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("RampNorth", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("RampSouth", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("RampWest", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("Rock", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("Selector", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("SpeechBubble", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("Star", [1,1,1], (btn)=>this.onBtnClick(btn)),
-
-                new ButtonViewModel().set("TreeShort", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("TreeUgly", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("TreeTall", [1,1,1], (btn)=>this.onBtnClick(btn)),
-                new ButtonViewModel().set("WallBlock", [1,1,1], (btn)=>this.onBtnClick(btn))
-
-            )
+            $.get('/api/get_blocks',(data) =>
+            {
+                var dataObj = JSON.parse(data);
+                for (var key in dataObj)
+                {
+                    this.buttonViewModels.push(
+                        new ButtonViewModel().set(dataObj[key], [1, 1, 1], (btn)=>this.onBtnClick(btn))
+                    );
+                }
+                var zreerzrez= 0;
+            });
         }
 
         onMouseUp(sender:any, e:any)
@@ -99,7 +73,7 @@ module game2
             var eoffsetX = (e.offsetX || e.clientX - $(e.target).offset().left + window.pageXOffset ),
                 eoffsetY = (e.offsetY || e.clientY - $(e.target).offset().top + window.pageYOffset );
 
-            this.isMouseDrag = e.which == 2;
+            this.isMouseDrag = e.which == 2 || e.shiftKey == true;
             this.isMouseDown = true;
 
 
