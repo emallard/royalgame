@@ -1,9 +1,6 @@
 <?php
 
 require_once './vendor/twig/twig/lib/Twig/Autoloader.php';
-$filename = __DIR__ . '/' . $_SERVER['REQUEST_URI'];
-
-
 
 function startsWith($haystack, $needle)
 {
@@ -21,6 +18,8 @@ function endsWith($haystack, $needle)
     return (substr($haystack, -$length) === $needle);
 }
 
+$filename = __DIR__ . '/' . $_SERVER['REQUEST_URI'];
+
 // fichier existant
 if (file_exists($filename) && !is_dir($filename))
 {
@@ -31,7 +30,7 @@ else if (startsWith($_SERVER['REQUEST_URI'], '/ts'))
 {
     echo file_get_contents(__DIR__ . '/../' . $_SERVER['REQUEST_URI']);
 }
-// liste des blocks dispopnibles
+// liste des blocks disponibles
 else if ($_SERVER['REQUEST_URI'] == '/api/get_blocks')
 {
     $directory = './public/css/blocks';
@@ -42,6 +41,32 @@ else if ($_SERVER['REQUEST_URI'] == '/api/get_blocks')
         array_push($result, 'blocks/'.$f);
     }
     echo json_encode($result);
+}
+// scan dir
+else if ($_SERVER['REQUEST_URI'] == '/api/scandir')
+{
+    $dir = $_POST["dir"];
+    if (!file_exists($dir))
+    {
+        mkdir($dir);
+    }
+    $scanned_directory = array_diff(scandir($dir), array('..', '.'));
+    echo json_encode($scanned_directory);
+}
+// put contents
+else if ($_SERVER['REQUEST_URI'] == '/api/file_put_contents')
+{
+    $filename = $_POST["filename"];
+    $content = $_POST["content"];
+    file_put_contents($filename, $content);
+    echo "ok";
+}
+// get contents
+else if ($_SERVER['REQUEST_URI'] == '/api/file_get_contents')
+{
+    $filename = $_POST["filename"];
+    $content = file_get_contents($filename);
+    echo $content;
 }
 // fichiers twig
 else

@@ -1,5 +1,12 @@
 var game2;
 (function (game2) {
+    function endsWith(str, suffix) {
+        return str.indexOf(suffix, str.length - suffix.length) !== -1;
+    }
+    game2.endsWith = endsWith;
+})(game2 || (game2 = {}));
+var game2;
+(function (game2) {
     var LoadSaveService = (function () {
         function LoadSaveService() {
         }
@@ -283,9 +290,25 @@ var game2;
         function AppViewModel() {
             this.areaViewModel = new game2.AreaViewModel();
             this.loadSaveService = new game2.LoadSaveService();
+            this.saveViewModel = new game2.SaveViewModel();
+            this.openViewModel = new game2.OpenViewModel();
         }
+        AppViewModel.prototype.saveClick = function () {
+            var _this = this;
+            this.saveViewModel.onDialogOpen(function () { return _this.getSavedString(); });
+        };
+        AppViewModel.prototype.getSavedString = function () {
+            return this.loadSaveService.save(this);
+        };
+        AppViewModel.prototype.openClick = function () {
+            var _this = this;
+            this.openViewModel.onDialogOpen(function (content) { return _this.setSavedString(content); });
+        };
+        AppViewModel.prototype.setSavedString = function (content) {
+            return this.loadSaveService.load(this, content);
+        };
         AppViewModel.prototype.save = function () {
-            var savedString = this.loadSaveService.save(this);
+            var savedString = this.getSavedString();
             var b = new Blob([savedString], { type: "text/plain;charset=UTF-8" });
             saveAs(b, "royalgame.json");
         };
@@ -570,6 +593,113 @@ var game2;
         return CubeViewModel;
     })();
     game2.CubeViewModel = CubeViewModel;
+})(game2 || (game2 = {}));
+var game2;
+(function (game2) {
+    var OpenFilenameViewModel = (function () {
+        function OpenFilenameViewModel() {
+            this.filename = "";
+        }
+        return OpenFilenameViewModel;
+    })();
+    game2.OpenFilenameViewModel = OpenFilenameViewModel;
+    var OpenViewModel = (function () {
+        function OpenViewModel() {
+            this.filenames = ko.observableArray();
+            this.filename = ko.observable("");
+        }
+        OpenViewModel.prototype.onDialogOpen = function (fileContentCb) {
+            var _this = this;
+            this.fileContentCb = fileContentCb;
+            this.filenames.removeAll();
+            $.ajax({
+                method: 'POST',
+                url: '/api/scandir',
+                data: { dir: './save' }
+            }).done(function (data) {
+                var dataObj = JSON.parse(data);
+                for (var key in dataObj) {
+                    var f = dataObj[key];
+                    var vm = new OpenFilenameViewModel();
+                    vm.filename = f;
+                    vm.click = function (sender, e) { return _this.filename(sender.filename); };
+                    _this.filenames.push(vm);
+                }
+            });
+        };
+        OpenViewModel.prototype.openClick = function () {
+            var _this = this;
+            $.ajax({
+                method: 'POST',
+                url: '/api/file_get_contents',
+                data: {
+                    filename: './save/' + this.filename()
+                }
+            }).done(function (data) {
+                console.log("open ok");
+                _this.fileContentCb(data);
+            }).fail(function () {
+                alert("open failed");
+            });
+        };
+        return OpenViewModel;
+    })();
+    game2.OpenViewModel = OpenViewModel;
+})(game2 || (game2 = {}));
+var game2;
+(function (game2) {
+    var SaveFilenameViewModel = (function () {
+        function SaveFilenameViewModel() {
+            this.filename = "";
+        }
+        return SaveFilenameViewModel;
+    })();
+    game2.SaveFilenameViewModel = SaveFilenameViewModel;
+    var SaveViewModel = (function () {
+        function SaveViewModel() {
+            this.filenames = ko.observableArray();
+            this.filename = ko.observable("");
+        }
+        SaveViewModel.prototype.onDialogOpen = function (fileContentCb) {
+            var _this = this;
+            this.fileContentCb = fileContentCb;
+            this.filenames.removeAll();
+            $.ajax({
+                method: 'POST',
+                url: '/api/scandir',
+                data: { dir: './save' }
+            }).done(function (data) {
+                var dataObj = JSON.parse(data);
+                for (var key in dataObj) {
+                    var f = dataObj[key];
+                    var vm = new SaveFilenameViewModel();
+                    vm.filename = f;
+                    vm.click = function (sender, e) { return _this.filename(sender.filename); };
+                    _this.filenames.push(vm);
+                }
+            });
+        };
+        SaveViewModel.prototype.saveClick = function () {
+            var f = this.filename();
+            if (!game2.endsWith(f, '.json')) {
+                f = f + '.json';
+            }
+            $.ajax({
+                method: 'POST',
+                url: '/api/file_put_contents',
+                data: {
+                    filename: './save/' + f,
+                    content: this.fileContentCb()
+                }
+            }).done(function (data) {
+                console.log("save ok");
+            }).fail(function () {
+                alert("save failed");
+            });
+        };
+        return SaveViewModel;
+    })();
+    game2.SaveViewModel = SaveViewModel;
 })(game2 || (game2 = {}));
 var game2;
 (function (game2) {

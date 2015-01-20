@@ -11,17 +11,22 @@
     }
 </script>
 
+{% include 'editor_open.twig' %}
+{% include 'editor_save.twig' %}
+
+
 
 <div>
+    <!--
     <button data-bind="click: save">save</button>
     Open:<input type="file" data-bind="event : { change: openChange }"/>
-
+    -->
     <div data-bind="with: areaViewModel">
         <button data-bind="click: zoomPlus">zoom +</button>
         <button data-bind="click: zoomMinus">zoom -</button>
-        (or wheel) - Drag Middle Click to translate
         <button data-bind="click: heightPlus">height+</button>
         <button data-bind="click: heightMinus">height-</button>
+        (Wheel) (MiddleClick) (Shift + LeftClick)
     </div>
 
 </div>

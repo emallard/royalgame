@@ -1,4 +1,5 @@
 ///<reference path='./public/libs/knockout.d.ts' />
+///<reference path='./ts/StandardExtensions.ts' />
 ///<reference path='./ts/services/LoadSaveService.ts' />
 ///<reference path='./ts/services/SavedData.ts' />
 ///<reference path='./ts/view/Rectangle.ts' />
@@ -10,4 +11,6 @@
 ///<reference path='./ts/viewModels/ButtonViewModel.ts' />
 ///<reference path='./ts/viewModels/Cube.ts' />
 ///<reference path='./ts/viewModels/CubeViewModel.ts' />
+///<reference path='./ts/viewModels/OpenViewModel.ts' />
+///<reference path='./ts/viewModels/SaveViewModel.ts' />
 ///<reference path='./ts/viewModels/ShadowComputer.ts' />

@@ -1,0 +1,33 @@
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#openModal"
+        data-bind="click:openClick">
+    Open
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="openModal" tabindex="-1" role="dialog" aria-labelledby="openModalLabel" aria-hidden="true"
+        style="z-index:1000002">
+    <div class="modal-dialog">
+        <div class="modal-content" data-bind="with:openViewModel">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="openModalLabel">Open</h4>
+            </div>
+            <div class="modal-body">
+
+                <div data-bind="foreach: filenames">
+                    <button class="btn btn-link">
+                        <span data-bind="text:filename, click:click"></span>
+                    </button><br>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <input data-bind="value:filename" class="pull-left"/>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" data-bind="click:openClick">Open</button>
+
+            </div>
+        </div>
+    </div>
+</div>

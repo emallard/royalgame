@@ -6,14 +6,38 @@ module game2
     {
         areaViewModel = new AreaViewModel();
         loadSaveService = new LoadSaveService();
+        saveViewModel = new SaveViewModel();
+        openViewModel = new OpenViewModel();
 
         constructor() {
         }
 
 
+
+        saveClick()
+        {
+            this.saveViewModel.onDialogOpen(() => this.getSavedString());
+        }
+
+        getSavedString()
+        {
+            return this.loadSaveService.save(this);
+        }
+
+
+        openClick()
+        {
+            this.openViewModel.onDialogOpen((content) => this.setSavedString(content));
+        }
+
+        setSavedString(content:string)
+        {
+            return this.loadSaveService.load(this, content);
+        }
+
         save()
         {
-            var savedString = this.loadSaveService.save(this);
+            var savedString = this.getSavedString();
             var b = new Blob([savedString], {type: "text/plain;charset=UTF-8"});
             saveAs(b, "royalgame.json");
         }
